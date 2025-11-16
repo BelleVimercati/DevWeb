@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Todo + Pomodoro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="form">
+            <div class="form-left">
+                <h1 class="form-title">Mate o leão 🦁</h1>
+            </div>
+            <div class="form-right">
+                <!-- Login -->
+                <div id="login-section" class="form-card">
+                    <h2>Bem vindo de volta!</h2>
+                    <input class="form-input" id="login" placeholder="Usuário ou email"><br>
+                    <input class="form-input" id="password" placeholder="Senha" type="password"><br>
+                    <button class="botao" onclick="login()">Entrar</button>
+
+                    <div class="register">
+                        <p>Ainda não tem conta?</p>
+                        <button onclick="showRegister()">Criar uma conta.</button>
+                    </div>
+                </div>
+
+                <!-- Registro -->
+                <div id="register-section" class="hidden form-card">
+                    <h2>Cadastre-se!</h2>
+                    <input class="form-input" id="reg-username" placeholder="Usuário"><br>
+                    <input class="form-input" id="reg-email" placeholder="Email"><br>
+                    <input class="form-input" id="reg-password" placeholder="Senha" type="password"><br>
+                    <button class="botao" onclick="register()">Registrar</button>
+
+                    <div class="register">
+                        <p>Já tem conta?</p>
+                        <button onclick="showLogin()">Voltar ao login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

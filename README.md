@@ -1,3 +1,8 @@
 # DevWeb
 
-testando o git
+Tarefas para fazer
+
+- [ ] pagina home
+- [ ] pagina de sobre
+- [ ] pagina de cadastro
+- [ ] 
