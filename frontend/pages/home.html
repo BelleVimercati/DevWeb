@@ -1,4 +1,4 @@
-<div id="app-section" class="hidden">
+<!-- <div id="app-section" class="hidden">
 
     <button class="logout" onclick="logout()">Sair</button>
 
@@ -15,4 +15,34 @@
     </div>
     <p id="pomodoro-status"></p>
 
-</div>
+</div> -->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Home</title>
+</head>
+
+<body>
+    <p>home</p>
+</body>
+<script>
+    async function checkLogin() {
+        const r = await fetch(`${API}/check_session.php`, {
+            credentials: "include"
+        });
+
+        const data = await r.json();
+
+        if (!data.logged) {
+            window.location.href = "index.html"; // volta para login
+        }
+    }
+
+    checkLogin();
+</script>
+
+</html>

@@ -1,27 +1,56 @@
 <?php
-// login.php
-require_once 'config.php';
+// -------- CORS --------
+header("Access-Control-Allow-Origin: http://127.0.0.1:5500");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 
-$input = json_decode(file_get_contents('php://input'), true);
-$login = trim($input['login'] ?? ''); // can be username or email
-$password = $input['password'] ?? '';
-
-if (!$login || !$password) {
-    respond(['error' => 'login and password required'], 400);
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+    http_response_code(200);
+    exit;
 }
 
+session_start();
+header("Content-Type: application/json");
+
+// -------- INPUT --------
+$input = json_decode(file_get_contents("php://input"), true);
+
+$username = $input["login"] ?? "";
+$password = $input["password"] ?? "";
+
+// -------- BANCO --------
 try {
-    $stmt = $pdo->prepare("SELECT id, password_hash FROM users WHERE username = :login OR email = :login LIMIT 1");
-    $stmt->execute([':login' => $login]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$user || !password_verify($password, $user['password_hash'])) {
-        respond(['error' => 'invalid credentials'], 401);
-    }
-
-    // login success
-    session_regenerate_id(true);
-    $_SESSION['user_id'] = (int)$user['id'];
-    respond(['message' => 'logged_in', 'user_id' => $user['id']]);
+    $pdo = new PDO(
+        "mysql:host=mysql;dbname=todo_pomodoro;charset=utf8",
+        "appuser",
+        "apppass",
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+    );
 } catch (PDOException $e) {
-    respond(['error' => 'database error'], 500);
+    echo json_encode([
+        "success" => false,
+        "error" => "Conexão falhou",
+        "message" => $e->getMessage()
+    ]);
+    exit;
 }
+
+// -------- QUERY (usa username na tabela) --------
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+$stmt->execute([$username]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// -------- VALIDAÇÃO --------
+if (!$user || !password_verify($password, $user["password_hash"])) {
+    echo json_encode(["success" => false, "message" => "Login inválido"]);
+    exit;
+}
+
+// -------- SUCESSO --------
+$_SESSION["user_id"] = $user["id"];
+
+echo json_encode([
+    "success" => true,
+    "user_id" => $user["id"]
+]);

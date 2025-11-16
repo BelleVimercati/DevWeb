@@ -10,13 +10,6 @@ function showRegister() {
   document.getElementById("register-section").classList.remove("hidden");
 }
 
-function showApp() {
-  document.getElementById("login-section").classList.add("hidden");
-  document.getElementById("register-section").classList.add("hidden");
-  document.getElementById("app-section").classList.remove("hidden");
-  loadTodos();
-}
-
 /* ---------------- LOGIN ---------------- */
 async function login() {
   const login = document.getElementById("login").value;
@@ -24,15 +17,21 @@ async function login() {
 
   const r = await fetch(`${API}/login.php`, {
     method: "POST",
-    credentials: "include",
+    credentials: "include", // mantém a sessão
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ login, password }),
   });
 
   const data = await r.json();
+
+  console.log("RESPONSE:", data); // debug para ver o que chega
+
   if (data.user_id) {
-    showApp();
-  } else alert(data.error);
+    // 🔥 redirecionar
+    window.location.href = "pages/home.html";
+  } else {
+    alert(data.error);
+  }
 }
 
 /* ---------------- REGISTER ---------------- */
