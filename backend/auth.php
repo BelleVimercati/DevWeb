@@ -1,5 +1,5 @@
 <?php
-// auth.php
+// confere se o usuário está autenticado e retorna o ID do usuário
 function require_auth() {
     if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
         http_response_code(401);

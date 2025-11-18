@@ -1,5 +1,5 @@
 <?php
-// logout.php
+// Remove a sessão do usuário e destrói a sessão
 require_once 'config.php';
 $_SESSION = [];
 if (ini_get("session.use_cookies")) {

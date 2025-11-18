@@ -1,5 +1,5 @@
 <?php
-// check_session.php
+// essa função confere se a variável de sessão do usuário está definida
 require_once 'config.php';
 
 if (isset($_SESSION["user_id"])) {

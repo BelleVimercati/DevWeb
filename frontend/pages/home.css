@@ -34,11 +34,11 @@ body {
   min-width: 320px;
 }
 
-.form-tarefas{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+.form-tarefas {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 .form-card h2 {
@@ -81,42 +81,44 @@ body {
   max-width: 100%;
   border: none;
   cursor: pointer;
-
 }
 
+.todo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
 
 .todo-list {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
+  list-style: none;;
+  padding: 0;
+  align-items: start;
+  display: flex;
+  flex-direction: column;
 }
 
 .todo-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    background: #f9f9f9;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    border-left: 4px solid #007bff;
-}
-
-.todo-list li span {
-    flex-grow: 1;
-    font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  min-width: 300px;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ced1d3;
 }
 
 .todo-list li button {
-    background: #ff4444;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
+  background: transparent;
+  color: rgb(0, 0, 0);
+  border: 1px solid #404142;
+  padding: 4px 6px;
+  border-radius: 100%;
+  cursor: pointer;
+  font-size: 8px;
 }
 
 .todo-list li button:hover {
-    background: #cc0000;
+  background: #38dd8b;
 }

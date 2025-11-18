@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./home.css">
+    <title>Home</title>
+</head>
+
+<body>
+    <div id="app-section" class="container">
+        <button class="logout botao" onclick="logout()">Sair</button>
+        <div class="form">
+            <div class="form-left"></div>
+            <div class="form-right">
+                <div class="form-card">
+                    <h2>Adicionar leão 🦁</h2>
+                    <div class="form-tarefas">
+                        <input id="todo-title" placeholder="Nova tarefa" class="form-input-todo">
+                        <button class="botao" onclick="addTodoSimple()">Adicionar</button>
+                    </div>
+                </div>
+                <div class="todo">
+                    <h2>Minhas tarefas:</h2>
+                    <!-- Adicione a lista para mostrar os TODOs -->
+                    <ul id="todo-list" class="todo-list"></ul>
+                </div>
+            </div>
+            <h2>Pomodoro</h2>
+            <div>
+                <button onclick="startPomodoro('focus')">Iniciar Focus</button>
+                <button onclick="startPomodoro('break')">Iniciar Break</button>
+            </div>
+            <p id="pomodoro-status"></p>
+        </div>
+    </div>
+</body>
+
+<script src="/frontend/pages/home.js"></script>
+
+</html>

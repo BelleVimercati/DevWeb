@@ -1,5 +1,5 @@
 <?php
-// -------- CORS --------
+// Arquivo realiza o login do usuário
 header("Access-Control-Allow-Origin: http://127.0.0.1:5500");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -13,13 +13,12 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
 session_start();
 header("Content-Type: application/json");
 
-// -------- INPUT --------
 $input = json_decode(file_get_contents("php://input"), true);
 
 $username = $input["login"] ?? "";
 $password = $input["password"] ?? "";
 
-// -------- BANCO --------
+// realiza a conexão com o banco de dados
 try {
     $pdo = new PDO(
         "mysql:host=mysql;dbname=todo_pomodoro;charset=utf8",
@@ -36,20 +35,21 @@ try {
     exit;
 }
 
-// -------- QUERY (usa username na tabela) --------
+// recupera o usuário do banco de dados
 $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
 $stmt->execute([$username]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// -------- VALIDAÇÃO --------
+// valida o login e senha
 if (!$user || !password_verify($password, $user["password_hash"])) {
     echo json_encode(["success" => false, "message" => "Login inválido"]);
     exit;
 }
 
-// -------- SUCESSO --------
+// guarda o ID do usuário na sessão
 $_SESSION["user_id"] = $user["id"];
 
+// retorna sucesso
 echo json_encode([
     "success" => true,
     "user_id" => $user["id"]
