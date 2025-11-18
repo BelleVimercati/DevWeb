@@ -64,46 +64,136 @@ async function logout() {
 
 /* ---------------- TODOS ---------------- */
 async function loadTodos() {
-  const r = await fetch(`${API}/todos.php`, { credentials: "include" });
-  const data = await r.json();
+  try {
+    const r = await fetch(`${API}/todos.php`, { credentials: "include" });
+    const data = await r.json();
 
-  const ul = document.getElementById("todo-list");
-  ul.innerHTML = "";
+    const ul = document.getElementById("todo-list");
+    ul.innerHTML = "";
 
-  data.todos.forEach((t) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${t.title}</span>
-      <button onclick="deleteTodo(${t.id})">X</button>
-    `;
-    ul.appendChild(li);
-  });
+    data.todos.forEach((t) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span>${t.title}</span>
+        <button onclick="deleteTodo(${t.id})">X</button>
+      `;
+      ul.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar TODOs:", error);
+  }
 }
 
 async function addTodo() {
-  const title = document.getElementById("todo-title").value;
+  const titleInput = document.getElementById("todo-title");
+  const title = titleInput.value.trim();
+
   if (!title) return;
 
-  await fetch(`${API}/todos.php`, {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title }),
-  });
+  try {
+    // Disable o botão para evitar múltiplos cliques
+    const button = event.target;
+    button.disabled = true;
+    button.textContent = "Adicionando...";
 
-  document.getElementById("todo-title").value = "";
-  loadTodos();
+    const response = await fetch(`${API}/todos.php`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    });
+
+    if (response.ok) {
+      // Limpa o input imediatamente para feedback visual
+      titleInput.value = "";
+
+      // Recarrega a lista de TODOs
+      await loadTodos();
+    } else {
+      console.error("Erro ao adicionar TODO");
+    }
+  } catch (error) {
+    console.error("Erro ao adicionar TODO:", error);
+  } finally {
+    // Reabilita o botão
+    const button = document.querySelector('button[onclick="addTodo()"]');
+    button.disabled = false;
+    button.textContent = "Adicionar";
+  }
+}
+
+// Versão otimizada que adiciona localmente sem recarregar tudo
+async function addTodoOptimized() {
+  const titleInput = document.getElementById("todo-title");
+  const title = titleInput.value.trim();
+
+  if (!title) return;
+
+  try {
+    const button = event.target;
+    button.disabled = true;
+    button.textContent = "Adicionando...";
+
+    const response = await fetch(`${API}/todos.php`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    });
+
+    if (response.ok) {
+      const newTodo = await response.json();
+      titleInput.value = "";
+
+      // Adiciona o novo TODO localmente sem recarregar toda a lista
+      addTodoToList(newTodo.todo);
+    }
+  } catch (error) {
+    console.error("Erro ao adicionar TODO:", error);
+  } finally {
+    const button = document.querySelector(
+      'button[onclick="addTodoOptimized()"]'
+    );
+    button.disabled = false;
+    button.textContent = "Adicionar";
+  }
+}
+
+// Função para adicionar um TODO à lista visualmente
+function addTodoToList(todo) {
+  const ul = document.getElementById("todo-list");
+  const li = document.createElement("li");
+  li.innerHTML = `
+    <span>${todo.title}</span>
+    <button onclick="deleteTodo(${todo.id})">X</button>
+  `;
+  ul.appendChild(li);
 }
 
 async function deleteTodo(id) {
-  await fetch(`${API}/todos.php`, {
-    method: "DELETE",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id }),
-  });
+  if (!confirm("Tem certeza que deseja excluir este TODO?")) return;
 
-  loadTodos();
+  try {
+    await fetch(`${API}/todos.php`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    // Remove o item visualmente
+    const items = document.querySelectorAll("#todo-list li");
+    items.forEach((item) => {
+      if (item.querySelector("button").onclick.toString().includes(id)) {
+        item.remove();
+      }
+    });
+
+    // Ou simplesmente recarrega a lista para garantir consistência
+    // await loadTodos();
+  } catch (error) {
+    console.error("Erro ao excluir TODO:", error);
+  }
 }
 
 /* ---------------- POMODORO ---------------- */

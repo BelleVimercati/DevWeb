@@ -1,9 +1,10 @@
 <?php
-session_start();
-header("Content-Type: application/json");
+// check_session.php
+require_once 'config.php';
 
 if (isset($_SESSION["user_id"])) {
-    echo json_encode(["logged" => true, "user_id" => $_SESSION["user_id"]]);
+    respond(["logged" => true, "user_id" => $_SESSION["user_id"]]);
 } else {
-    echo json_encode(["logged" => false]);
+    respond(["logged" => false]);
 }
+?>
