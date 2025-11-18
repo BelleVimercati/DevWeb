@@ -25,60 +25,6 @@ loadTodos();
   }
 } */
 
-async function checkIfLoggedIn() {
-  try {
-    const r = await fetch(`${API}/check_session.php`, {
-      credentials: "include",
-    });
-
-    if (r.ok) {
-      const data = await r.json();
-      if (data.logged) {
-        window.location.href = "home.html";
-      }
-    }
-  } catch (error) {
-    console.log("Usuário não logado ou servidor offline");
-  }
-}
-
-// Login
-document
-  .getElementById("login-form")
-  .addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const message = document.getElementById("login-message");
-
-    try {
-      const response = await fetch(`${API}/login.php`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        window.location.href = "home.html";
-      } else {
-        message.textContent = data.error || "Erro no login";
-        message.style.color = "red";
-      }
-    } catch (error) {
-      message.textContent = "Erro de conexão";
-      message.style.color = "red";
-    }
-  });
-
-// Verifica uma vez ao carregar a página
-checkIfLoggedIn();
-
 async function addTodoSimple() {
   const titleInput = document.getElementById("todo-title");
   const title = titleInput.value.trim();
@@ -162,4 +108,88 @@ async function deleteTodo(id) {
   } catch (error) {
     console.error("Erro ao excluir TODO:", error);
   }
+}
+
+let currentPomodoroId = null;
+let countdownInterval = null;
+let remainingMs = 0;
+
+function formatTime(ms) {
+  const totalSec = Math.floor(ms / 1000);
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+}
+
+function startCountdown(durationMs) {
+  clearInterval(countdownInterval);
+
+  remainingMs = durationMs;
+  const display = document.getElementById("pomodoro-countdown");
+
+  display.textContent = formatTime(remainingMs);
+
+  countdownInterval = setInterval(() => {
+    remainingMs -= 1000;
+
+    if (remainingMs <= 0) {
+      clearInterval(countdownInterval);
+      display.textContent = "00:00";
+      stopPomodoro(); // ENCERRA AUTOMATICAMENTE NO BACKEND
+      return;
+    }
+
+    display.textContent = formatTime(remainingMs);
+  }, 1000);
+}
+
+async function startPomodoro(type) {
+  const minutes = parseInt(document.getElementById("custom-time").value, 10);
+
+  if (!minutes || minutes <= 0) {
+    alert("Digite um tempo válido em minutos!");
+    return;
+  }
+
+  const durationMs = minutes * 60 * 1000;
+
+  const r = await fetch(`${API}/pomodoro.php`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type }),
+  });
+
+  const data = await r.json();
+  currentPomodoroId = data.id;
+
+  document.getElementById(
+    "pomodoro-status"
+  ).textContent = `Pomodoro iniciado: ${type} (${minutes} min) – ID ${currentPomodoroId}`;
+
+  startCountdown(durationMs);
+}
+
+async function stopPomodoro() {
+  if (!currentPomodoroId) return;
+
+  clearInterval(countdownInterval);
+
+  const r = await fetch(`${API}/pomodoro.php`, {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: currentPomodoroId }),
+  });
+
+  const data = await r.json();
+
+  document.getElementById(
+    "pomodoro-status"
+  ).textContent = `Pomodoro encerrado (${data.duration_seconds}s)`;
+
+  // Zera o display após parar
+  document.getElementById("pomodoro-countdown").textContent = "";
+
+  currentPomodoroId = null;
 }

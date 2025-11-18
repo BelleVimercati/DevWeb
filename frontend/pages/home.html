@@ -5,13 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./home.css">
     <title>Home</title>
+    <script src="/frontend/pages/home.js"></script>
 </head>
 
 <body>
     <div id="app-section" class="container">
-        <button class="logout botao" onclick="logout()">Sair</button>
+        <header class="header">
+            <p>Mate o leão 🦁</p>
+            <button class="logout botao" onclick="logout()">Sair</button>
+        </header>
         <div class="form">
-            <div class="form-left"></div>
+            <div class="form-left">
+                <h2>Pomodoro</h2>
+            
+                <!-- Campo para escolher o tempo -->
+                <div style="margin-bottom: 10px;">
+                    <label for="custom-time">Tempo (minutos):</label>
+                    <input type="number" id="custom-time" min="1" max="180" placeholder="Ex: 25" style="width: 80px; padding: 4px;" />
+                </div>
+            
+                <div>
+                    <button onclick="startPomodoro('focus')">Iniciar Focus</button>
+                    <button onclick="startPomodoro('break')">Iniciar Break</button>
+                </div>
+            
+                <p id="pomodoro-status"></p>
+                <p id="pomodoro-countdown" style="font-size: 22px; font-weight: bold;"></p>
+
+            </div>
+
             <div class="form-right">
                 <div class="form-card">
                     <h2>Adicionar leão 🦁</h2>
@@ -26,16 +48,9 @@
                     <ul id="todo-list" class="todo-list"></ul>
                 </div>
             </div>
-            <h2>Pomodoro</h2>
-            <div>
-                <button onclick="startPomodoro('focus')">Iniciar Focus</button>
-                <button onclick="startPomodoro('break')">Iniciar Break</button>
-            </div>
-            <p id="pomodoro-status"></p>
         </div>
     </div>
 </body>
 
-<script src="/frontend/pages/home.js"></script>
 
 </html>
