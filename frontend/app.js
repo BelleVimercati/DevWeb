@@ -59,7 +59,7 @@ async function logout() {
     credentials: "include",
   });
 
-  location.reload();
+  window.location = "/frontend/";
 }
 
 /* ---------------- TODOS ---------------- */
@@ -171,7 +171,7 @@ function addTodoToList(todo) {
 }
 
 async function deleteTodo(id) {
-  if (!confirm("Tem certeza que deseja excluir este TODO?")) return;
+  if (!confirm("Tem certeza que deseja concluir esta tarefa?")) return;
 
   try {
     await fetch(`${API}/todos.php`, {

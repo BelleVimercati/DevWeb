@@ -1,8 +1,7 @@
 <?php
-// todos.php
-require_once 'config.php';
-require_once 'auth.php';
 require_once 'cors.php';
+require_once "config.php";
+require_once "auth.php";
 
 require_auth();
 

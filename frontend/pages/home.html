@@ -3,49 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./home.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Home</title>
-    <script src="/frontend/pages/home.js"></script>
+    <script src="/frontend/scripts/home.js"></script>
+    <script src="/frontend/scripts/pomodoro.js"></script>
 </head>
 
 <body>
+    <header class="header">
+        <p>🦁</p>
+        <button class="botao-logout" onclick="logout()">Sair</button>
+    </header>
     <div id="app-section" class="container">
-        <header class="header">
-            <p>Mate o leão 🦁</p>
-            <button class="logout botao" onclick="logout()">Sair</button>
-        </header>
         <div class="form">
             <div class="form-left">
-                <h2>Pomodoro</h2>
-            
-                <!-- Campo para escolher o tempo -->
-                <div style="margin-bottom: 10px;">
-                    <label for="custom-time">Tempo (minutos):</label>
-                    <input type="number" id="custom-time" min="1" max="180" placeholder="Ex: 25" style="width: 80px; padding: 4px;" />
-                </div>
-            
-                <div>
-                    <button onclick="startPomodoro('focus')">Iniciar Focus</button>
-                    <button onclick="startPomodoro('break')">Iniciar Break</button>
-                </div>
-            
-                <p id="pomodoro-status"></p>
-                <p id="pomodoro-countdown" style="font-size: 22px; font-weight: bold;"></p>
+                <div class="pomodoro-card">
+                    <div class="pomodoro-tabs">
+                        <button class="tab active" onclick="setMode('focus')">Pomodoro</button>
+                        <button class="tab" onclick="setMode('short')">Short Break</button>
+                        <button class="tab" onclick="setMode('long')">Long Break</button>
+                    </div>
 
+                    <div class="pomodoro-timer" id="pomodoro-countdown">25:00</div>
+
+                    <div class="pomodoro-button">
+                        <button class="pomodoro-main" onclick="togglePomodoro()">START</button>
+
+                        <button class="pomodoro-reset" onclick="resetPomodoro()">RESET</button>
+                    </div>
+                </div>
             </div>
-
             <div class="form-right">
                 <div class="form-card">
-                    <h2>Adicionar leão 🦁</h2>
+                    <h2>Adicionar tarefas</h2>
                     <div class="form-tarefas">
                         <input id="todo-title" placeholder="Nova tarefa" class="form-input-todo">
                         <button class="botao" onclick="addTodoSimple()">Adicionar</button>
                     </div>
                 </div>
                 <div class="todo">
-                    <h2>Minhas tarefas:</h2>
-                    <!-- Adicione a lista para mostrar os TODOs -->
-                    <ul id="todo-list" class="todo-list"></ul>
+                    <h2>Tarefas</h2>
+                    <div class="tasks-container">                       
+                        <ul id="todo-list" class="todo-list"></ul>
+                    </div>
                 </div>
             </div>
         </div>

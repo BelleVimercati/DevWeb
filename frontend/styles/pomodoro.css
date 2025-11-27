@@ -1,0 +1,83 @@
+/* CARD PRINCIPAL */
+.pomodoro-card {
+  padding: 30px;
+  border-radius: 12px;
+  width: 380px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* TABS */
+.pomodoro-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.pomodoro-tabs .tab {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.pomodoro-tabs .tab:hover {
+  opacity: 1;
+}
+
+.pomodoro-tabs .tab.active {
+  background: rgba(255, 255, 255, 0.3);
+  opacity: 1;
+}
+
+/* TIMER GRANDE */
+.pomodoro-timer {
+  font-size: 80px;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+/* BOTÃO START */
+.pomodoro-start {
+  background: white;
+  border: none;
+  padding: 14px 40px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pomodoro-main {
+  background: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.pomodoro-reset {
+  margin-top: 10px;
+  background: #ffffff44;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pomodoro-button{
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
