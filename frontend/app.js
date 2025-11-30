@@ -12,25 +12,44 @@ function showRegister() {
 
 /* ---------------- LOGIN ---------------- */
 async function login() {
-  const login = document.getElementById("login").value;
-  const password = document.getElementById("password").value;
+  const userInput = document.getElementById("login");
+  const passInput = document.getElementById("password");
+
+  const user = userInput.value.trim();
+  const pass = passInput.value.trim();
+
+  let valid = true;
+
+  if (!user) {
+    userInput.classList.add("is-invalid");
+    valid = false;
+  } else {
+    userInput.classList.remove("is-invalid");
+  }
+
+  if (!pass) {
+    passInput.classList.add("is-invalid");
+    valid = false;
+  } else {
+    passInput.classList.remove("is-invalid");
+  }
+
+  if (!valid) return;
 
   const r = await fetch(`${API}/login.php`, {
     method: "POST",
-    credentials: "include", // mantém a sessão
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ login, password }),
+    body: JSON.stringify({ login: user, password: pass }),
   });
 
   const data = await r.json();
-
-  console.log("RESPONSE:", data); // debug para ver o que chega
+  console.log("RESPONSE:", data);
 
   if (data.user_id) {
-    // 🔥 redirecionar
     window.location.href = "pages/home.html";
   } else {
-    alert(data.error);
+    alert(data.error || "Erro ao fazer login");
   }
 }
 
@@ -188,9 +207,6 @@ async function deleteTodo(id) {
         item.remove();
       }
     });
-
-    // Ou simplesmente recarrega a lista para garantir consistência
-    // await loadTodos();
   } catch (error) {
     console.error("Erro ao excluir TODO:", error);
   }

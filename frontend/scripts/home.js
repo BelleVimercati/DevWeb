@@ -1,13 +1,25 @@
 const API = "http://localhost:8000";
 loadTodos();
 
+let editId = null;
+
+
 async function logout() {
-  await fetch(`${API}/auth/logout.php`, {
+  await fetch(`${API}/logout.php`, {
     credentials: "include",
   });
 
   window.location = "/frontend/";
 }
+
+function openEditModal(id, title) {
+  editId = id;
+  document.getElementById("editTodoTitle").value = title;
+
+  const modal = new bootstrap.Modal(document.getElementById("editTodoModal"));
+  modal.show();
+}
+
 
 async function addTodoSimple() {
   const titleInput = document.getElementById("todo-title");
@@ -60,9 +72,21 @@ async function loadTodos() {
       data.todos.forEach((t) => {
         const li = document.createElement("li");
         li.innerHTML = `
-          <span>${t.title}</span>
-          <button onclick="deleteTodo(${t.id})">✓</button>
-        `;
+    <span>${t.title}</span>
+
+    <div class="todo-actions">
+        <button class="btn btn-warning btn-sm" onclick="openEditModal(${
+          t.id
+        }, '${t.title.replace(
+          /'/g,
+          "\\'"
+        )}')"><i class="bi bi-pencil-square"></i></button>
+        <button class="btn btn-success btn-sm" onclick="askDelete(${
+          t.id
+        })"><i class="bi bi-check-lg"></i></button>
+    </div>
+`;
+
         ul.appendChild(li);
       });
     } else {
@@ -74,8 +98,6 @@ async function loadTodos() {
 }
 
 async function deleteTodo(id) {
-  if (!confirm("Tem certeza que deseja excluir esta tarefa?")) return;
-
   try {
     await fetch(`${API}/todos.php`, {
       method: "DELETE",
@@ -90,3 +112,51 @@ async function deleteTodo(id) {
     console.error("Erro ao excluir TODO:", error);
   }
 }
+
+document
+  .getElementById("confirmDeleteBtn")
+  .addEventListener("click", async () => {
+    if (deleteId !== null) {
+      await deleteTodo(deleteId);
+      deleteId = null;
+
+      // Fecha o modal
+      const modalEl = document.getElementById("confirmDeleteModal");
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal.hide();
+    }
+  });
+let deleteId = null;
+
+function askDelete(id) {
+  deleteId = id; // guarda o ID que queremos excluir
+  
+  const modal = new bootstrap.Modal(
+    document.getElementById("confirmDeleteModal")
+  );
+  modal.show();
+}
+
+document.getElementById("saveEditBtn").addEventListener("click", async () => {
+  const newTitle = document.getElementById("editTodoTitle").value.trim();
+  if (!newTitle) return alert("O título não pode ser vazio!");
+
+  await fetch(`${API}/todos.php`, {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: editId,
+      title: newTitle,
+    }),
+  });
+
+  // fecha modal
+  const modal = bootstrap.Modal.getInstance(
+    document.getElementById("editTodoModal")
+  );
+  modal.hide();
+
+  // recarrega lista
+  await loadTodos();
+});
